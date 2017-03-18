@@ -1,0 +1,28 @@
+epochs: 20
+test_steps: 1000
+repeats: 1
+envs:
+  - CartPole-v1
+algorithms:
+  -
+    name: Reinforce
+    type: Reinforce
+    train_steps: 20000
+    config:
+      heads: 32
+      preprocess: default
+      preprocess_config: {subsample: 1, frame_skip: 1, history: 3, noop_max: 5}
+      approximation: advantage_policy_gradient
+      approximation_config:
+        actor_weight: 1.0
+        critic_weight: 1.0
+        entropy_weight: 1.0
+      # TODO: Add eligibility parameter.
+      discount: 1  # 0.95
+      network: control
+      update_every: 10000
+      batch_size: 32
+      optimizer: AdamOptimizer
+      optimizer_config: {}
+      initial_learning_rate: 1e-3
+      gradient_clipping: 10
