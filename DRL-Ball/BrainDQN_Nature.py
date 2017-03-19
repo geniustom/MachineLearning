@@ -10,13 +10,13 @@ import random
 from collections import deque 
 
 # Hyper Parameters:
-FRAME_PER_ACTION = 5
+FRAME_PER_ACTION = 2
 GAMMA = 0.99            # decay rate of past observations
 OBSERVE = 100           # timesteps to observe before training
-EXPLORE = 10000         # frames over which to anneal epsilon
-FINAL_EPSILON = 0       # 0.001 # final value of epsilon
-INITIAL_EPSILON = 0     # 0.01 # starting value of epsilon
-REPLAY_MEMORY = 5000   # number of previous transitions to remember
+EXPLORE = 200000         # frames over which to anneal epsilon
+FINAL_EPSILON = 0.       # 0.001 # final value of epsilon
+INITIAL_EPSILON = 0.99     # 0.01 # starting value of epsilon
+REPLAY_MEMORY = 50000   # number of previous transitions to remember
 BATCH_SIZE = 32         # size of minibatch
 NN_SAVE_CNT = 100000     
 UPDATE_TIME = 100
@@ -100,9 +100,7 @@ class BrainDQN:
 		self.trainStep = tf.train.AdamOptimizer(1e-6).minimize(self.cost)
 		
 
-	def trainQNetwork(self):
-
-		
+	def trainQNetwork(self):		
 		# Step 1: obtain random minibatch from replay memory
 		minibatch = random.sample(self.replayMemory,BATCH_SIZE)
 		state_batch = [data[0] for data in minibatch]
@@ -153,7 +151,7 @@ class BrainDQN:
 		else:
 			state = "train"
 
-		print ("Rounds:", self.timeStep, "/ State:", state,"/ Epsilon:", self.epsilon,"/ Reward:",reward)
+		#print ("Rounds:", self.timeStep, "/ State:", state,"/ Epsilon:", round(self.epsilon,2),"/ Reward:",reward)
 
 		self.currentState = newState
 		self.timeStep += 1
