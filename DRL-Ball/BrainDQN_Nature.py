@@ -10,16 +10,16 @@ import random
 from collections import deque 
 
 # Hyper Parameters:
-FRAME_PER_ACTION = 2
-GAMMA = 0.99            # decay rate of past observations
-OBSERVE = 100           # timesteps to observe before training
-EXPLORE = 200000         # frames over which to anneal epsilon
-FINAL_EPSILON = 0.       # 0.001 # final value of epsilon
-INITIAL_EPSILON = 0.99     # 0.01 # starting value of epsilon
-REPLAY_MEMORY = 50000   # number of previous transitions to remember
-BATCH_SIZE = 32         # size of minibatch
-NN_SAVE_CNT = 100000     
-UPDATE_TIME = 100
+FRAME_PER_ACTION = 1
+GAMMA = 0.99              # decay rate of past observations
+OBSERVE = 50000           # 開始訓練前先讓AI看的次數 (50000)
+EXPLORE = 200000          # frames over which to anneal epsilon (200000)
+FINAL_EPSILON = 0.        # 0.001 # final value of epsilon
+INITIAL_EPSILON = 0.9     # 0.01 # starting value of epsilon
+REPLAY_MEMORY = 1000000   # number of previous transitions to remember (1000000)
+BATCH_SIZE = 32           # size of minibatch (32)
+NN_SAVE_CNT = 100000      # 訓練多少次之後存檔 (100000)
+UPDATE_TIME = 1000
 
 class BrainDQN:
 

@@ -22,9 +22,9 @@ BALL_SPEED = 10
 MOVE_STAY = [1, 0, 0]
 MOVE_LEFT = [0, 1, 0]
 MOVE_RIGHT = [0, 0, 1]
-ALIVE_REWARD = 0.1    #存活獎勵
-WIN_REWARD = 10    #獎勵
-LOSE_REWARD = -100  #懲罰
+ALIVE_REWARD = 0    #存活獎勵
+WIN_REWARD = 1    #獎勵
+LOSE_REWARD = -1  #懲罰
  
 class Game(object):
 	def __init__(self):
@@ -68,12 +68,17 @@ class Game(object):
 			self.bar_pos_x = SCREEN_SIZE[0] - BAR_SIZE[0]
 			
 		self.screen.fill(BLACK)
+		# draw bar
 		self.bar_pos.left = self.bar_pos_x
 		pygame.draw.rect(self.screen, WHITE, self.bar_pos)
  
+		# draw ball
 		self.ball_pos.left += self.ball_dir_x * BALL_SPEED
 		self.ball_pos.bottom += self.ball_dir_y * BALL_SPEED
-		pygame.draw.rect(self.screen, WHITE, self.ball_pos)
+		if self.ball_dir_y==-1:
+			pygame.draw.rect(self.screen, WHITE, self.ball_pos,0)
+		else:
+			pygame.draw.rect(self.screen, WHITE, self.ball_pos,3)
  
 		#打到邊界反彈時，行進斜率 *=-1
 		if self.ball_pos.top <= 0 or self.ball_pos.bottom >= (SCREEN_SIZE[1] - BAR_SIZE[1]+1):
@@ -102,13 +107,12 @@ class Game(object):
 def preprocess(observation):
 	observation = cv2.cvtColor(cv2.resize(observation, (80, 80)), cv2.COLOR_BGR2GRAY)
 	ret, observation = cv2.threshold(observation,1,255,cv2.THRESH_BINARY)
-	#plt.imshow(observation, cmap ='gray')
-	#plt.show()
+	#plt.imshow(observation, cmap ='gray'); plt.show();
 	return np.reshape(observation,(80,80,1))
 
 	
 def playGame():
-	# Step 0: Define err rate
+	# Step 0: Define reort
 	win = 0
 	lose = 0
 	points = 0
@@ -133,6 +137,7 @@ def playGame():
 		nextObservation = preprocess(Observation)
 		brain.setPerception(nextObservation,action,reward,terminal)
 		
+		########################  統計輸出報表用  ########################
 		if reward==WIN_REWARD: win+=1 
 		elif reward==LOSE_REWARD: lose+=1
 		points+=reward
@@ -140,7 +145,15 @@ def playGame():
 			points=0
 			print("Game over~~")
 		print("hit rate:" ,round(win/(win+lose+1)*100,2),"% ,win_points:",round(points,2)," ,cnt:",brain.timeStep)
+		if (win+lose)>100:
+			learn_rate.append(round(win/(win+lose+1)*100,2))
+			plt.plot(learn_rate);plt.show();
+			win=0
+			lose=0
+		########################  統計輸出報表用  ########################
 
+		
+learn_rate=[]
 def main():
 	playGame()
 
