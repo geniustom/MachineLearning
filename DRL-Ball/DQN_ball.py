@@ -145,7 +145,7 @@ def playGame():
 			points=0
 			print("Game over~~")
 		print("hit rate:" ,round(win/(win+lose+1)*100,2),"% ,win_points:",round(points,2)," ,cnt:",brain.timeStep)
-		if (win+lose)>100:
+		if brain.timeStep % 1000 == 0:
 			learn_rate.append(round(win/(win+lose+1)*100,2))
 			plt.plot(learn_rate);plt.show();
 			win=0
